@@ -8,17 +8,17 @@ namespace AdventOfCode2021.Tests
         public void Test1()
         {
             var day15 = new Day15();
-            var result = day15.ExecutePart1("Input/day15Example.txt");
+            var result = day15.ExecutePart2("Input/day15Example.txt");
             Assert.AreEqual(40, result);
         }
 
-        [Test]
-        public void Test2()
-        {
-            var day15 = new Day15();
-            var result = day15.ExecutePart1("Input/day15Input.txt");
-            Assert.AreEqual(40, result);
-        }
+        //[Test]
+        //public void Test2()
+        //{
+        //    var day15 = new Day15();
+        //    var result = day15.ExecutePart1("Input/day15Input.txt");
+        //    Assert.AreEqual(40, result);
+        //}
 
         [Test]
         public void Test3()
