@@ -2,7 +2,7 @@ using FluentAssertions;
 
 namespace AdventOfCode2015.Tests;
 
-public class Tests
+public class Day1Tests
 {
     [TestCase("(())", 0)]
     [TestCase("()()", 0)]
