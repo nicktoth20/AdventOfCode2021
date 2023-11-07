@@ -46,30 +46,58 @@ public class Day3
     
     public int ExecutePart2(string filePath)
     {
+        
         var lines = _parser.ParseLines(filePath);
-        var totalWrappingPaper = 0;
-        foreach (var line in lines)
+        var santa = new HashSet<string>
         {
-            var parts = line.Split('x');
-            var length = int.Parse(parts[0]);
-            var width = int.Parse(parts[1]);
-            var height = int.Parse(parts[2]);
-            var maxSide = Math.Max(Math.Max(length, width), height);
-            totalWrappingPaper += length * width * height;
-            if (maxSide == length)
+            "0.0"
+        };
+        var x = 0;
+        var y = 0;
+        var operations = lines.First();
+        for(var i = 0; i < operations.Length; i += 2)
+        {
+            switch (operations[i])
             {
-                totalWrappingPaper += width * 2 + height * 2;
-            } 
-            else if (maxSide == width)
-            {
-                totalWrappingPaper += length * 2 + height * 2;
+                case '>':
+                    x++;
+                    break;
+                case '<':
+                    x--;
+                    break;
+                case '^':
+                    y++;
+                    break;
+                default:
+                    y--;
+                    break;
             }
-            else
+
+            santa.Add($"{x}.{y}");
+        }
+        x = 0;
+        y = 0;
+        for(var i = 1; i < operations.Length; i += 2)
+        {
+            switch (operations[i])
             {
-                totalWrappingPaper += width * 2 + length * 2;
+                case '>':
+                    x++;
+                    break;
+                case '<':
+                    x--;
+                    break;
+                case '^':
+                    y++;
+                    break;
+                default:
+                    y--;
+                    break;
             }
+
+            santa.Add($"{x}.{y}");
         }
 
-        return totalWrappingPaper;
+        return santa.Count;
     }
 }
