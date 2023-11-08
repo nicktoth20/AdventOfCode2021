@@ -24,6 +24,6 @@ public class Day6Tests
     {
         var day6 = new Day6();
         var result = day6.ExecutePart1("Input/day06Input.txt");
-        result.Should().Be(543665); // too low
+        result.Should().Be(543903); 
     }
 }

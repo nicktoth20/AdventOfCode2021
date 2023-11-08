@@ -34,7 +34,7 @@ public class Day6
         return CountLightsOn(lights);
     }
     
-    private int CountLightsOn(bool[,] lights) {
+    private static int CountLightsOn(bool[,] lights) {
         var count = 0;
         for(var i = 0; i < 1000; i++) {
             for(var x = 0; x < 1000; x++) {
