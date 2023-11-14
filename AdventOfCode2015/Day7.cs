@@ -51,64 +51,74 @@ public class Day7
         return wires[wire];
     }
 
-    public long ExecutePart2(string filePath)
+    public ushort ExecutePart2(string filePath, string wire)
     {
         var lines = _parser.ParseLines(filePath);
-        var lights = new int[1000,1000];
+        var instructions = new Dictionary<string, string>();
         foreach (var line in lines) {
-            if (line.StartsWith("turn on")) {
-                TurnOn(line, lights);
+            if (line.Contains("AND"))
+            {
+                var parsedValues = line.Split(' ');
+                instructions[parsedValues[4]] = line.Split("->")[0];
             }
-            if (line.StartsWith("toggle")) {
-                Toggle(line, lights);
+            else if (line.Contains("OR")) {
+                var parsedValues = line.Split(' ');
+                instructions[parsedValues[4]] = line.Split("->")[0];
             }
-            if (line.StartsWith("turn off")) {
-                TurnOff(line, lights);
+            else if (line.Contains("LSHIFT")) {
+                var parsedValues = line.Split(' ');
+                instructions[parsedValues[4]]  = line.Split("->")[0];
+            }
+            else if (line.Contains("RSHIFT")) {
+                var parsedValues = line.Split(' ');
+                instructions[parsedValues[4]]  = line.Split("->")[0];
+            }
+            else if (line.Contains("NOT")) {
+                var parsedValues = line.Split(' ');
+                instructions[parsedValues[3]]  = line.Split("->")[0];
+            }
+            else
+            {
+                var parsedValues = line.Split(' ');
+                instructions.Add(parsedValues[2], parsedValues[0]);
             }
         }
-        return CountBrightness(lights);
+        return FindValue(wire, instructions);
     }
 
-    private static void TurnOn(string input, int[,] lights) {
-        var parts = input.Split(' ');
-        var first = parts[2].Split(',').Select(x => int.Parse(x)).ToList();
-        var second = parts[4].Split(',').Select(x => int.Parse(x)).ToList();
-        for(var i = first[0]; i <= second[0]; i++) {
-            for(var x = first[1]; x <= second[1]; x++) {
-                lights[i, x]++;
-            }
+    public ushort FindValue(string  wire, Dictionary<string, string> dict) {
+        if (ushort.TryParse(wire, out var ushortValue)) {
+            return ushortValue;
         }
-    }
 
-    private static void TurnOff(string input, int[,] lights) {
-        var parts = input.Split(' ');
-        var first = parts[2].Split(',').Select(x => int.Parse(x)).ToList();
-        var second = parts[4].Split(',').Select(x => int.Parse(x)).ToList();
-        for(var i = first[0]; i <= second[0]; i++) {
-            for(var x = first[1]; x <= second[1]; x++) {
-                if (lights[i, x] > 0) lights[i, x]--;
-            }
+        var instruction = dict[wire];
+        if (instruction.Contains("AND"))
+        {
+            var parsedValues = instruction.Split(' ');
+            return (ushort)(FindValue(parsedValues[0], dict) & FindValue(parsedValues[2], dict));
         }
-    }
-
-    private static void Toggle(string input, int[,] lights) {
-        var parts = input.Split(' ');
-        var first = parts[1].Split(',').Select(int.Parse).ToList();
-        var second = parts[3].Split(',').Select(int.Parse).ToList();
-        for(var i = first[0]; i <= second[0]; i++) {
-            for(var x = first[1]; x <= second[1]; x++) {
-                lights[i, x] += 2;
-            }
+        else if (instruction.Contains("OR")) {
+            var parsedValues = instruction.Split(' ');
+            return (ushort)(FindValue(parsedValues[0], dict) | FindValue(parsedValues[2], dict));
         }
-    }
-    
-    private static long CountBrightness(int[,] lights) {
-        var count = 0;
-        for(var i = 0; i < 1000; i++) {
-            for(var x = 0; x < 1000; x++) {
-                count += lights[i, x];
-            }
+        else if (instruction.Contains("LSHIFT")) {
+            var parsedValues = instruction.Split(' ');
+            return (ushort)(FindValue(parsedValues[0], dict) << int.Parse(parsedValues[2]));
         }
-        return count;
+        else if (instruction.Contains("RSHIFT")) {
+            var parsedValues = instruction.Split(' ');
+            return (ushort)(FindValue(parsedValues[0], dict) >> int.Parse(parsedValues[2]));
+        }
+        else if (instruction.Contains("NOT")) {
+            var parsedValues = instruction.Split(' ');
+            return (ushort)(~FindValue(parsedValues[1], dict));
+        }
+        else
+        {
+            var parsedValues = instruction.Split(' ');
+            var result =  ushort.TryParse(parsedValues[0], out var parsedValue);
+            if (result) return parsedValue;
+            return FindValue(parsedValues[0], dict);
+        }
     }
 }
