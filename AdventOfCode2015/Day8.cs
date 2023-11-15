@@ -26,6 +26,23 @@ public class Day8
             var decode = Regex.Unescape(line);
             decodeCount += decode.Length;
         }
+
+        decodeCount -= lines.Count() * 2;
         return charactersOfString - decodeCount;
+    }
+
+    public int ExecutePart2(string filePath)
+    {
+        var lines = _parser.ParseLines(filePath);
+        var charactersOfString = 0;
+        var decodeCount = 0;
+        foreach (var line in lines) {
+            charactersOfString += line.Length;
+            var decode = Regex.Escape(line).Replace("\"", @"\""");
+            decodeCount += decode.Length;
+        }
+
+        decodeCount += lines.Count() * 2;
+        return decodeCount - charactersOfString;
     }
 }
