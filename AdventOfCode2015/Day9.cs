@@ -23,34 +23,54 @@ public class Day9
         public int Distance { get; set; }
     }
 
+
+    private HashSet<string> _totalCities = new HashSet<string>();
+
+    private int _shortestDistance = int.MaxValue;
+    
     public int ExecutePart1(string filePath)
     {
         var lines = _parser.ParseLines(filePath);
-        var totalCities = new HashSet<string>();
         var nodes = new List<Node>();
-        var shortestDistance = int.MaxValue;
         foreach (var line in lines)
         {
             var parsed = line.Split(" ");
-            totalCities.Add(parsed[0]);
-            totalCities.Add(parsed[2]);
+            _totalCities.Add(parsed[0]);
+            _totalCities.Add(parsed[2]);
             
             nodes.Add(new Node { From = parsed[0], To = parsed[2], Distance = int.Parse(parsed[4]) });
+            nodes.Add(new Node { From = parsed[2], To = parsed[0], Distance = int.Parse(parsed[4]) });
         }
 
         var startingCities = nodes.Select(z => z.From).Distinct();
         
         foreach (var startingCity in startingCities)
         {
-            
+            var visitedCities = new HashSet<string>
+            {
+                startingCity
+            };
+            Travel(nodes.Where(z => z.From == startingCity).ToList(), visitedCities, 0);
         }
         
-        return 1;
+        return _shortestDistance;
     }
 
-    private void Travel()
+    private void Travel(List<Node> nodes, HashSet<string> visitedCities, int distance)
     {
-        
+        if (visitedCities.Count == _totalCities.Count) {
+            if (distance < _shortestDistance) {
+                _shortestDistance = distance;
+            }
+            return;
+        }
+        foreach (var node in nodes)
+        {
+            var nextNodes = nodes.Where(z => z.From == node.To && !visitedCities.Contains(node.To)).ToList();
+            visitedCities.Add(node.To);
+            Travel(nextNodes, visitedCities, distance + node.Distance);
+            visitedCities.Remove(node.To);
+        }
     }
 
     public int ExecutePart2(string filePath)
