@@ -8,11 +8,11 @@ public class Day10
     {
     }
     
-    public string ExecutePart1(int iterations)
+    public int ExecutePart1(int iterations)
     {
         var number = "1113222113";
         
-        for (var i = 0; i <= iterations; i++)
+        for (var i = 0; i < iterations; i++)
         {
             var sb = new StringBuilder();
             
@@ -40,7 +40,7 @@ public class Day10
             number = sb.ToString();
         }
         
-        return number;
+        return number.Length;
     }
 
     public int ExecutePart2(string filePath)
